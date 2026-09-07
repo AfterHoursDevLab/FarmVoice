@@ -1,0 +1,19 @@
+{
+  "name": "@farmvoice/shared",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Shared types, tool schemas, and prompt for FarmVoice",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "tsc -p tsconfig.json --watch",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.2"
+  }
+}

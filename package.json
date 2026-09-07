@@ -1,0 +1,29 @@
+{
+  "name": "farmvoice",
+  "version": "0.1.0",
+  "private": true,
+  "description": "FarmVoice — voice-controlled greenhouse dashboard: talk to your greenhouse (AssemblyAI Voice Agent demo)",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "npm run build:shared && concurrently -n api,web -c blue,green \"npm run dev:api\" \"npm run dev:web\"",
+    "dev:api": "npm run dev -w @farmvoice/api",
+    "dev:web": "npm run dev -w @farmvoice/web",
+    "build": "npm run build -w @farmvoice/shared && npm run build -w @farmvoice/api && npm run build -w @farmvoice/web",
+    "build:shared": "npm run build -w @farmvoice/shared",
+    "typecheck": "npm run typecheck -w @farmvoice/shared && npm run typecheck -w @farmvoice/api && npm run typecheck -w @farmvoice/web",
+    "test:assess": "npm run build -w @farmvoice/api && node apps/api/tests/assess.test.js",
+    "test:workflow": "npm run build -w @farmvoice/api && node apps/api/tests/workflow.test.js"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  },
+  "allowScripts": {
+    "esbuild@0.28.2": true
+  }
+}

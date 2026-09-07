@@ -1,0 +1,15 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: farmvoice-postgres
+    environment:
+      POSTGRES_USER: farmvoice
+      POSTGRES_PASSWORD: farmvoice
+      POSTGRES_DB: farmvoice
+    ports:
+      - "5434:5432"
+    volumes:
+      - farmvoice-pgdata:/var/lib/postgresql/data
+
+volumes:
+  farmvoice-pgdata:

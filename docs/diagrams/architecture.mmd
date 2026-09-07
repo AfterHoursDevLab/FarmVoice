@@ -1,0 +1,54 @@
+flowchart LR
+    subgraph Farmer
+        USER["👨‍🌾 Farmer"]
+    end
+
+    subgraph Browser
+        MIC["🎙️ Microphone (PCM16 AudioWorklet)"]
+        SPK["🔊 Speaker"]
+        UI["📊 Dashboard (Next.js)"]
+        VA["Voice Agent Client (useVoiceAgent)"]
+    end
+
+    subgraph AssemblyAI["☁️ AssemblyAI Voice Agent"]
+        STT["Realtime Transcript"]
+        LLM["Hosted LLM (SYSTEM_PROMPT)"]
+        TTS["Text-to-Speech"]
+    end
+
+    subgraph Backend["Node + Express API :4000"]
+        TOK["POST /api/voice/token<br>(mints temp token, key never leaves server)"]
+        TOOLS["runTool()<br>safety matrix + verification"]
+        ASSESS["assess()<br>severity/issues/recs"]
+        STATE["Farm state (in-memory)<br>shared source of truth"]
+        ALERTS["Alerts + assessment<br>(SSE every tick)"]
+        SIM["Simulator<br>(random walk / demo lock)"]
+    end
+
+    subgraph Data["PostgreSQL (optional)"]
+        DB[("sensor_history<br>equipment_events<br>agent_decisions<br>alerts")]
+    end
+
+    USER -->|"Check my greenhouse."| MIC
+    MIC --> VA
+    VA -->|"input.audio"| STT
+    STT --> LLM
+    LLM -->|"tool.call"| VA
+    VA -->|"POST /api/farm/tools/:name"| TOOLS
+    TOOLS --> ASSESS
+    ASSESS --> STATE
+    TOOLS -->|"control_ac / control_fan / control_irrigation"| STATE
+    TOOLS -->|"get_farm_status (verify)"| STATE
+    TOOLS -. optional log .-> DB
+    TOOLS -->|"tool.result"| VA
+    VA -->|"tool.result"| LLM
+    LLM -->|"natural language reply"| TTS
+    TTS -->|"audio"| VA
+    VA --> SPK
+    USER -->|"AC is on. Irrigation is running."| SPK
+    STATE -->|"SSE /api/farm/events"| UI
+    ALERTS -->|"SSE /api/farm/events"| UI
+    SIM --> STATE
+    ALERTS -. "history" .-> DB
+    TOK -->|"temp token (no API key)"| VA
+    VA -->|"wss://agents.assemblyai.com/v1/ws?token=..."| STT
