@@ -180,7 +180,8 @@ export function useVoiceAgent() {
       const { token } = await api.voiceToken();
 
       const audioCtx = new AudioContext({ sampleRate: SAMPLE_RATE });
-      await audioCtx.audioWorklet.addModule("/pcm-processor.js");
+      const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+      await audioCtx.audioWorklet.addModule(`${basePath}/pcm-processor.js`);
       await audioCtx.resume();
 
       const stream = await navigator.mediaDevices.getUserMedia({
