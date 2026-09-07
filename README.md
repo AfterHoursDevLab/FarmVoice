@@ -65,12 +65,3 @@ npm run test:assess           # assessment engine unit tests (needs dist build)
 npm run test:workflow         # integration tests against a running api (:4000)
 npm run typecheck             # shared + api + web
 ```
-
-## Security notes
-
-- `ASSEMBLYAI_API_KEY` is **server-side only**; browsers get short-lived, single-use
-  temp tokens minted by `POST /api/voice/token`.
-- Control endpoints should sit behind real auth before driving physical hardware.
-
-See [`docs/TECH_STACK.md`](docs/TECH_STACK.md) for the architecture and
-[`docs/DEMO_SCRIPT.md`](docs/DEMO_SCRIPT.md) for the hero demo recording script.
